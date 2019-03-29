@@ -1,0 +1,14 @@
+- hosts: ftd
+  connection: httpapi
+  gather_facts: False
+  tasks: 
+  - include_role:
+      name: acl_manager
+      tasks_from: whitelist_ip
+    vars:
+      whitelist_network_type: network
+      whitelist_name: test_network_new
+      whitelist_network_description: This is test comment
+      whitelist_subtype: NETWORK
+      whitelist_value: 192.168.3.0/24
+      ansible_network_os: ftd

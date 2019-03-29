@@ -1,0 +1,15 @@
+- hosts: ftd
+  connection: httpapi
+  gather_facts: False
+  tasks:
+  - include_role:
+      name: acl_manager
+      tasks_from: whitelist_url
+    vars:
+      whitelist_url_type: feed
+      whitelist_name: bogon
+      #whitelist_url_type: url
+      #whitelist_name: GoogleURL
+      #whitelist_url_description: URL for Google
+      #whitelist_url: www.google.com
+      ansible_network_os: ftd

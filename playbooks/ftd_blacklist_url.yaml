@@ -1,0 +1,15 @@
+- hosts: ftd
+  connection: httpapi
+  gather_facts: False
+  tasks: 
+  - include_role:
+      name: acl_manager
+      tasks_from: blacklist_url
+    vars:
+      #blacklist_url_type: feed #When URL is feed type
+      #blacklist_name: bots # Only feed name is required, as feeds are preconfigured in Cisco FTD
+      blacklist_url_type: url
+      blacklist_name: Attacker_Url
+      blacklist_url_description: Detected Attacker URL
+      blacklist_url: www.attacker.com
+      ansible_network_os: ftd

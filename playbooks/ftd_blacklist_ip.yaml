@@ -1,0 +1,15 @@
+- hosts: ftd
+  connection: httpapi
+  gather_facts: False
+  tasks:
+  - include_role:
+      name: acl_manager
+      tasks_from: blacklist_ip
+    vars:
+      blacklist_network_type: network
+      blacklist_name: attackers
+      blacklist_name: blacklist_4_network
+      blacklist_network_description: blacklist Network
+      blacklist_subtype: NETWORK
+      blacklist_value: 192.168.4.0/24
+      ansible_network_os: ftd

@@ -1,0 +1,19 @@
+---
+- hosts: checkpoint
+  connection: httpapi
+  gather_facts: False
+  tasks:
+  - name: Create access rule
+    checkpoint_access_rule:
+      layer: Network
+      name: "Drop attacker"
+      position: top
+      source: attacker
+      destination: Any
+      action: Drop
+  # To delete the access rule
+  #- name: Delete access rule
+  #  checkpoint_access_rule:
+  #    layer: Network
+  #    name: "Drop attacker"
+  #    state: absent

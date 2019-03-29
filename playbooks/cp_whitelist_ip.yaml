@@ -1,0 +1,11 @@
+---
+- hosts: checkpoint
+  connection: httpapi
+  tasks: 
+  - include_role:
+      name: acl_manager
+      tasks_from: whitelist_ip
+    vars:
+      source_ip: 192.168.0.10
+      destination_ip: 192.168.0.11
+      ansible_network_os: checkpoint

@@ -1,0 +1,10 @@
+---
+- hosts: checkpoint
+  connection: httpapi
+  gather_facts: False
+  tasks:
+  - name: Create host object
+    checkpoint_host:
+      name: attacker
+      ip_address: 192.168.0.15
+      state: present

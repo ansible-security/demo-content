@@ -1,0 +1,9 @@
+---
+- hosts: checkpoint
+  gather_facts: no
+  connection: httpapi
+  tasks:
+  - name: show-threat-rulebase
+    cp_mgmt_threat_rule_facts:
+      name: test_rule_new_1
+      layer: 598fd9ab-93e4-465b-9725-d228f3905cae

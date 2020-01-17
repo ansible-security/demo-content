@@ -1,0 +1,16 @@
+---
+- hosts: checkpoint
+  gather_facts: no
+  connection: httpapi
+  tasks:
+  - name: add-threat-rule
+    cp_mgmt_threat_rule:
+      comments: TEST IPS
+      install_on: Policy Targets
+      layer: 598fd9ab-93e4-465b-9725-d228f3905cae
+      name: test_rule_new_1
+      position: bottom
+      protected_scope: All_Internet
+      state: present
+      track: None
+      auto_publish_session: true

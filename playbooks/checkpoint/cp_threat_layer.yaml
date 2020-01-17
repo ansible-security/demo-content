@@ -1,0 +1,9 @@
+---
+- hosts: checkpoint
+  gather_facts: no
+  connection: httpapi
+  tasks:
+  - name: add-threat-layer
+    cp_mgmt_threat_layer:
+      name: New Layer 1
+      state: present

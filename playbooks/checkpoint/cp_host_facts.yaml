@@ -1,0 +1,11 @@
+---
+- hosts: check_point
+  connection: httpapi
+  tasks:
+  - name: Collect-host facts
+    cp_mgmt_host_facts:
+      name: New CP_MGMT Host 1
+    register: cp_host
+  - name: Display host facts
+    debug:
+      msg: "{{ cp_host }}"

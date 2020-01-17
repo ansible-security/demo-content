@@ -1,0 +1,9 @@
+---
+- hosts: checkpoint
+  connection: httpapi
+  gather_facts: False
+  tasks:
+  - name: Publish session
+    checkpoint_session:
+      uid: 95466e9e-cb03-436a-a044-a10c13a75ca8
+      state: published

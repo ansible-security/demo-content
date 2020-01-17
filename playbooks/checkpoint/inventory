@@ -1,0 +1,2 @@
+[check_point]
+checkpoint ansible_host=checkpoinnt_appliance_url ansible_user=guest ansible_password=guest ansible_network_os=checkpoint ansible_httpapi_use_ssl=True ansible_httpapi_validate_certs=False

@@ -1,0 +1,19 @@
+---
+- hosts: checkpoint
+  connection: httpapi
+  gather_facts: False
+  tasks:
+    - name: add-access-rule
+      cp_mgmt_access_rule:
+        layer: Network
+        name: Rule 1
+        position: 1
+        service:
+          - SMTP
+          - AOL
+        state: present
+    - name: delete-access-rule
+      cp_mgmt_access_rule:
+        layer: Network
+        name: Rule 1
+        state: absent

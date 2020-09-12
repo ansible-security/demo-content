@@ -1,0 +1,19 @@
+---
+- hosts: trendmicro
+  collections:
+    - trendmicro.deepsec
+  tasks:
+    - name: Configure a new Syslog Config
+      trendmicro.deepsec.syslog_config:
+        state: present
+        name: DEMO_SYSLOG_CONFIG
+        facility: local0
+        event_format: leef
+        direct: false
+        server: 192.0.2.1
+        port: 514
+        transport: udp
+        description: Syslog Api request from Ansible
+      register: syslog_config
+    - debug:
+        msg: "{{ syslog_config['syslog_config'] }}"

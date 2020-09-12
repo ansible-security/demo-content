@@ -1,0 +1,13 @@
+---
+- hosts: trendmicro
+  collections:
+    - trendmicro.deepsec
+  tasks:
+    - name: Apply the Syslog Config to System Settings
+      trendmicro.deepsec.system_settings:
+        state: present
+        platform_setting_syslog_config_id:
+          value: "21"
+      register: system_settings
+    - debug:
+        msg: "{{ system_settings['systemsettings'] }}"

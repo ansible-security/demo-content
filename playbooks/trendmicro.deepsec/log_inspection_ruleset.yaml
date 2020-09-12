@@ -1,0 +1,40 @@
+---
+- hosts: trendmicro
+  collections:
+    - trendmicro.deepsecurity
+  tasks:
+    - name: Create a MySql log inspection rule
+      trendmicro.deepsec.log_inspection_rules:
+        state: present
+        name: custom log_rule for mysqld event
+        description: demo log inspection rule
+        minimum_agent_version: 6.0.0.0
+        type: defined
+        template: basic-rule
+        pattern: name
+        pattern_type: string
+        rule_id: 100001
+        rule_description: some rule description
+        groups:
+          - test
+        alert_minimum_severity: 4
+        alert_enabled: true
+        log_files:
+          log_files:
+            - location: /var/log/mysqld.log
+              format: mysql-log
+      register: log
+    - name: Log Inspection rule
+      debug:
+        msg: "{{ log }}"
+    - name: Create Log Inspection policy assignment
+      trendmicro.deepsec.policies_assignment_config:
+        state: present
+        policy_id: "1"
+        policy_assignment_type: log-inspection
+        rule_id:
+          - "{{ log['log_inspection_rules']['ID'] }}"
+      register: policy_config
+    - name: Policy Config
+      debug:
+        msg: "{{ policy_config }}"

@@ -1,0 +1,16 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Verify Image via trivy cmd
+      command: trivy image -f json -o results.json golang:1.12-alpine
+    - name: Save the Json data to a Variable as a Fact
+      shell: cat ./results.json
+      register: results
+    - set_fact:
+        jsondata: "{{ results.stdout | from_json }}"
+    - name: "Display all Image Vulnerabilitiy!!"
+      debug:
+        var: item
+      loop: "{{ jsondata[0] | json_query(server_query) }}"
+      vars:
+        server_query: "Vulnerabilities[*].{PkgName: PkgName, Severity: Severity, Title: Title, VulnerabilityID: VulnerabilityID}"

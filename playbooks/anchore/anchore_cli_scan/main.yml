@@ -2,7 +2,7 @@
   hosts: localhost
   become: yes
   vars:
-    scan_image_name: "docker.io/library/ubuntu:latest"
+    scan_image_name: docker.io/library/debian:latest
     anchore_vars:
       ANCHORE_CLI_URL: http://localhost:8228/v1
       ANCHORE_CLI_USER: admin

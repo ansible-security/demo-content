@@ -1,0 +1,93 @@
+---
+- hosts: asa
+  gather_facts: no
+  vars:
+    instance:
+      host: "[SERVICE NOW INSTANCE]"
+      username: "[SERVICE NOW USER]"
+      password: "[SERVICE NOW PASSWORD]"
+    short_description: "[28/9/21] To block traffic from IP 192.0.2.0 to 192.0.3.0 as 192.0.2.0 range is compromised"
+    description:
+      - name: demo_deny_access
+        acl_type: extended
+        aces:
+        - grant: deny
+          line: 2
+          protocol_options:
+            tcp: true
+          source:
+            address: 192.0.2.0
+            netmask: 255.255.255.0
+          destination:
+            address: 192.0.3.0
+            netmask: 255.255.255.0
+            port_protocol:
+              eq: www
+          log: default
+
+  tasks:
+    - name: Create ServiceNow change_request 
+      servicenow.itsm.change_request:
+        instance: "{{ instance }}"
+        type: standard
+        state: new
+        short_description: "{{ short_description }}"
+        description: "{{ description }}"
+        priority: moderate
+        risk: moderate
+        impact: medium
+      register: result_cr
+
+    - name: Retrieve a ServiceNow change request by its sys_id
+      servicenow.itsm.change_request_info:
+        instance: "{{ instance }}"
+        sys_id: "{{ result_cr['record']['sys_id'] }}"
+      register: result
+    
+    - name: Create an ACL with the remark from tickets short_description
+      cisco.asa.asa_acls:
+        config:
+          acls:
+            - name: demo_deny_access
+              acl_type: extended
+              aces:
+              - line: 1
+                remark: "{{ result['records'][0]['short_description'] }}"
+        state: merged
+
+    - name: Create an ACL with the config from CR description
+      cisco.asa.asa_acls:
+        config:
+          acls: "{{ result['records'][0]['description']|from_yaml }}"
+        state: merged
+    
+    - name: Schedule ServiceNow change_request
+      servicenow.itsm.change_request:
+        instance: "{{ instance }}"
+        state: scheduled
+        assignment_group: admin
+        number: "{{ result_cr['record']['task_effective_number'] }}"
+
+    - name: Implement ServiceNow change_request
+      servicenow.itsm.change_request:
+        instance: "{{ instance }}"
+        state: implement
+        assignment_group: admin
+        number: "{{ result_cr['record']['task_effective_number'] }}"
+
+    - name: Review ServiceNow change_request
+      servicenow.itsm.change_request:
+        instance: "{{ instance }}"
+        state: review
+        assignment_group: admin
+        number: "{{ result_cr['record']['task_effective_number'] }}"
+    
+    - name: Close ServiceNow change_request
+      servicenow.itsm.change_request:
+        instance: "{{ instance }}"
+        state: closed
+        close_code: "successful"
+        close_notes: "Closed"
+        assignment_group: admin
+        number: "{{ result_cr['record']['task_effective_number'] }}"
+

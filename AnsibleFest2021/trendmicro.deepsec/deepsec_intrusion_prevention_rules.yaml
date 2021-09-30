@@ -1,0 +1,99 @@
+---
+- hosts: deepsec
+  collections:
+    - trendmicro.deepsec
+  tasks:
+    - name: Create Intrusion Prevention Rules
+      trendmicro.deepsec.deepsec_intrusion_prevention_rules:
+        state: merged
+        config:
+          - alert_enabled: false
+            always_include_packet_data: false
+            application_type_id: 300
+            can_be_assigned_alone: true
+            template: signature
+            signature: test_new_signature 
+            debug_mode_enabled: false
+            description: TEST IPR 1 DESCRIPTION
+            detect_only: false
+            event_logging_disabled: false
+            generate_event_on_packet_drop: true
+            name: TEST IPR 1
+            priority: normal
+            severity: medium
+          - alert_enabled: false
+            always_include_packet_data: false
+            application_type_id: 300
+            can_be_assigned_alone: true
+            template: signature
+            signature: test_new_signature 
+            debug_mode_enabled: false
+            description: TEST IPR 2 DESCRIPTION
+            detect_only: false
+            event_logging_disabled: false
+            generate_event_on_packet_drop: true
+            name: TEST IPR 2
+            priority: normal
+            severity: medium
+      register: result
+
+    - debug:
+        msg: "{{ result }}"
+
+    - name: Gather Intrusion Prevention Rules
+      trendmicro.deepsec.deepsec_intrusion_prevention_rules:
+        state: gathered
+        config:
+          - name: TEST IPR 1
+          - name: TEST IPR 2
+      register: gather_ipr
+
+    - debug:
+        msg: "{{ gather_ipr }}"
+
+    - name: Replace existing Intrusion Prevention Rules
+      register: replace_ipr
+      trendmicro.deepsec.deepsec_intrusion_prevention_rules:
+        state: replaced
+        config:
+          - alert_enabled: false
+            always_include_packet_data: false
+            application_type_id: 300
+            template: signature
+            signature: test_new_signature_1
+            debug_mode_enabled: false
+            description: TEST IPR 1 REPLACE DESCRIPTION
+            detect_only: false
+            event_logging_disabled: false
+            generate_event_on_packet_drop: true
+            name: TEST IPR 1
+            priority: normal
+            severity: low
+          - alert_enabled: false
+            always_include_packet_data: false
+            application_type_id: 300
+            template: signature
+            signature: test_new_signature_1
+            debug_mode_enabled: false
+            description: TEST IPR 2 REPLACE DESCRIPTION
+            detect_only: false
+            event_logging_disabled: false
+            generate_event_on_packet_drop: true
+            name: TEST IPR 2
+            priority: normal
+            severity: low
+
+    - debug:
+        msg: "{{ replace_ipr }}"
+
+    - name: Delete following Intrusion Prevention Rules
+      trendmicro.deepsec.deepsec_intrusion_prevention_rules:
+        state: deleted
+        config:
+          - name: TEST IPR 1
+          - name: TEST IPR 2
+      register: delete_ipr
+
+    - debug:
+        msg: "{{ delete_ipr }}"
+
